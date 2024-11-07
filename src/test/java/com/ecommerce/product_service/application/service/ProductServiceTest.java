@@ -1,5 +1,6 @@
 package com.ecommerce.product_service.application.service;
 
+
 import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.out.ProductRepository;
@@ -16,7 +17,6 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +33,7 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         testProduct = Product.builder()
-                .id("1")
+                .id(1L)
                 .name("Test Product")
                 .price(new BigDecimal("990.99"))
                 .description("Test Description")
@@ -42,7 +42,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void createProduct_Success() {
+    void createProduct_Success() { // Crear producto
         when(productRepository.create(any(Product.class)))
                 .thenReturn(Mono.just(testProduct));
 
@@ -54,31 +54,31 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProductById_Success() {
-        when(productRepository.findById("1"))
+    void getProductById_Success() { // Consultar producto por id
+        when(productRepository.findById(1L))
                 .thenReturn(Mono.just(testProduct));
 
-        StepVerifier.create(productService.getProductById("1"))
+        StepVerifier.create(productService.getProductById(1L))
                 .expectNext(testProduct)
                 .verifyComplete();
 
-        verify(productRepository, times(1)).findById("1");
+        verify(productRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getProductById_NotFound() {
-        when(productRepository.findById("999"))
+    void getProductById_NotFound() { // Fallo producto no encontrado
+        when(productRepository.findById(999L))
                 .thenReturn(Mono.empty());
 
-        StepVerifier.create(productService.getProductById("999"))
+        StepVerifier.create(productService.getProductById(999L))
                 .expectError(ProductNotFoundException.class)
                 .verify();
 
-        verify(productRepository, times(1)).findById("999");
+        verify(productRepository, times(1)).findById(999L);
     }
 
     @Test
-    void getAllProducts_Success() {
+    void getAllProducts_Success() { //Listar total productos
         when(productRepository.findAll())
                 .thenReturn(Flux.just(testProduct));
 
@@ -90,72 +90,72 @@ class ProductServiceTest {
     }
 
     @Test
-    void updateProduct_Success() {
+    void updateProduct_Success() { //Actualizar producto
         Product updatedProduct = Product.builder()
-                .id("1")
+                .id(1L)
                 .name("Updated Product")
                 .price(new BigDecimal("1990.99"))
                 .description("Updated Description")
                 .stock(20)
                 .build();
 
-        when(productRepository.update(anyString(), any(Product.class)))
+        when(productRepository.update(any(Long.class), any(Product.class)))
                 .thenReturn(Mono.just(updatedProduct));
 
-        StepVerifier.create(productService.updateProduct("1", updatedProduct))
+        StepVerifier.create(productService.updateProduct(1L, updatedProduct))
                 .expectNext(updatedProduct)
                 .verifyComplete();
 
-        verify(productRepository, times(1)).update(anyString(), any(Product.class));
+        verify(productRepository, times(1)).update(any(Long.class), any(Product.class));
     }
 
     @Test
-    void updateProduct_NotFound() {
+    void updateProduct_NotFound() { //Fallo producto no encontrado
         Product updateProduct = Product.builder()
-                .id("999")
+                .id(999L)
                 .name("Non Existent Product")
                 .price(new BigDecimal("100.00"))
                 .description("Test")
                 .stock(1)
                 .build();
 
-        when(productRepository.update(anyString(), any(Product.class)))
+        when(productRepository.update(any(Long.class), any(Product.class)))
                 .thenReturn(Mono.error(new ProductNotFoundException("Product not found with id: 999")));
 
-        StepVerifier.create(productService.updateProduct("999", updateProduct))
+        StepVerifier.create(productService.updateProduct(999L, updateProduct))
                 .expectError(ProductNotFoundException.class)
                 .verify();
 
-        verify(productRepository, times(1)).update(anyString(), any(Product.class));
+        verify(productRepository, times(1)).update(any(Long.class), any(Product.class));
     }
 
     @Test
-    void deleteProduct_Success() {
-        when(productRepository.deleteById("1"))
+    void deleteProduct_Success() { // Elimnar producto
+        when(productRepository.deleteById(1L))
                 .thenReturn(Mono.empty());
 
-        StepVerifier.create(productService.deleteProduct("1"))
+        StepVerifier.create(productService.deleteProduct(1L))
                 .verifyComplete();
 
-        verify(productRepository, times(1)).deleteById("1");
+        verify(productRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    void deleteProduct_NotFound() {
-        when(productRepository.deleteById("999"))
+    void deleteProduct_NotFound() { // Fallo al elimianar producto
+        when(productRepository.deleteById(999L))
                 .thenReturn(Mono.error(new ProductNotFoundException("Product not found with id: 999")));
 
-        StepVerifier.create(productService.deleteProduct("999"))
+        StepVerifier.create(productService.deleteProduct(999L))
                 .expectError(ProductNotFoundException.class)
                 .verify();
 
-        verify(productRepository, times(1)).deleteById("999");
+        verify(productRepository, times(1)).deleteById(999L);
     }
 
     @Test
-    void createProduct_WithNegativePrice() {
+    void createProduct_WithNegativePrice() { //Fallo precio negativo
         Product invalidProduct = Product.builder()
-                .id("1")
+                .id(1L)
                 .name("Invalid Product")
                 .price(new BigDecimal("-100.00"))
                 .description("Test Description")

@@ -1,5 +1,6 @@
 package com.ecommerce.product_service.application.service;
 
+import com.ecommerce.product_service.domain.exception.NotFoundException;
 import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.in.ProductUseCase;
@@ -20,7 +21,7 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public Mono<Product> getProductById(String id) {
+    public Mono<Product> getProductById(Long id) {
         return productRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with id: " + id)));
     }
@@ -31,12 +32,12 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public Mono<Product> updateProduct(String id, Product product) {
+    public Mono<Product> updateProduct(Long id, Product product) {
         return productRepository.update(id, product);
     }
 
     @Override
-    public Mono<Void> deleteProduct(String id) {
+    public Mono<Void> deleteProduct(Long id) {
         return productRepository.deleteById(id);
     }
 }

@@ -1,4 +1,5 @@
-package com.ecommerce.product_service.domain.model;
+package com.ecommerce.product_service.domain.DTO;
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -7,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Value
 @Builder
-public class Order {
+public class OrderDTO {
     Long id;
     Long userId;
     Long productId;
@@ -16,5 +17,6 @@ public class Order {
     String status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    UserDTO user;  // Información del usuario relacionado
+    ProductDTO product;  // Información del producto relacionado
 }
-

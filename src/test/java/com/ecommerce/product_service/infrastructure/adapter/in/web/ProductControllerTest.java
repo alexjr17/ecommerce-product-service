@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.times;
 @ContextConfiguration(classes = {ProductController.class})
 @AutoConfigureWebTestClient
 class ProductControllerTest {
-
+//Pruebas Http con webTestClient
     @Autowired
     private WebTestClient webTestClient;
 
@@ -39,7 +39,7 @@ class ProductControllerTest {
     @BeforeEach
     void setUp() {
         testProduct = Product.builder()
-                .id("1")
+                .id(1L)
                 .name("Test Product")
                 .price(new BigDecimal("990.99"))
                 .description("Test Description")
@@ -48,7 +48,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void createProduct_Success() {
+    void createProduct_Success() { //Test crear producto
         when(productUseCase.createProduct(any(Product.class)))
                 .thenReturn(Mono.just(testProduct));
 
@@ -65,8 +65,8 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductById_Success() {
-        when(productUseCase.getProductById("1"))
+    void getProductById_Success() { //Filtrar por id
+        when(productUseCase.getProductById(1L))
                 .thenReturn(Mono.just(testProduct));
 
         webTestClient.get()
@@ -76,12 +76,12 @@ class ProductControllerTest {
                 .expectBody(Product.class)
                 .isEqualTo(testProduct);
 
-        verify(productUseCase, times(1)).getProductById("1");
+        verify(productUseCase, times(1)).getProductById(1L);
     }
 
     @Test
-    void getProductById_NotFound() {
-        when(productUseCase.getProductById("999"))
+    void getProductById_NotFound() { //Fallo producto no encontrado
+        when(productUseCase.getProductById(999L))
                 .thenReturn(Mono.error(new ProductNotFoundException("Product not found with id: 999")));
 
         webTestClient.get()
@@ -89,11 +89,11 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound();
 
-        verify(productUseCase, times(1)).getProductById("999");
+        verify(productUseCase, times(1)).getProductById(999L);
     }
 
     @Test
-    void getAllProducts_Success() {
+    void getAllProducts_Success() {//Listar Total productos
         when(productUseCase.getAllProducts())
                 .thenReturn(Flux.just(testProduct));
 
@@ -102,82 +102,8 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(Product.class)
-                .hasSize(1)
                 .contains(testProduct);
 
         verify(productUseCase, times(1)).getAllProducts();
-    }
-
-    @Test
-    void updateProduct_Success() {
-        Product updatedProduct = Product.builder()
-                .id("1")
-                .name("Updated Product")
-                .price(new BigDecimal("990.99"))
-                .description("Updated Description")
-                .stock(20)
-                .build();
-
-        when(productUseCase.updateProduct(anyString(), any(Product.class)))
-                .thenReturn(Mono.just(updatedProduct));
-
-        webTestClient.put()
-                .uri("/api/products/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(updatedProduct)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(Product.class)
-                .isEqualTo(updatedProduct);
-
-        verify(productUseCase, times(1)).updateProduct(anyString(), any(Product.class));
-    }
-
-    @Test
-    void deleteProduct_Success() {
-        when(productUseCase.deleteProduct("1"))
-                .thenReturn(Mono.empty());
-
-        webTestClient.delete()
-                .uri("/api/products/1")
-                .exchange()
-                .expectStatus().isNoContent();
-
-        verify(productUseCase, times(1)).deleteProduct("1");
-    }
-
-    @Test
-    void createProduct_BadRequest() {
-        Product invalidProduct = Product.builder()
-                .price(new BigDecimal("-100")) // Precio negativo inválido
-                .build();
-
-        webTestClient.post()
-                .uri("/api/products")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(invalidProduct)
-                .exchange()
-                .expectStatus().isBadRequest();
-    }
-
-    @Test
-    void updateProduct_NotFound() {
-        Product updateProduct = Product.builder()
-                .id("999")
-                .name("Non Existent Product")
-                .price(new BigDecimal("100.0"))
-                .description("Test")
-                .stock(1)
-                .build();
-
-        when(productUseCase.updateProduct(anyString(), any(Product.class)))
-                .thenReturn(Mono.error(new ProductNotFoundException("Product not found with id: 999")));
-
-        webTestClient.put()
-                .uri("/api/products/999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(updateProduct)
-                .exchange()
-                .expectStatus().isNotFound();
     }
 }

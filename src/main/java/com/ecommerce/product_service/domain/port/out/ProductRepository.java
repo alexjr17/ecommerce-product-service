@@ -6,9 +6,9 @@ import reactor.core.publisher.Mono;
 
 public interface ProductRepository {
     Mono<Product> create(Product product);
-    Mono<Product> update(String id, Product product);
-    Mono<Product> findById(String id);
+    Mono<Product> update(Long id, Product product);
+    Mono<Product> findById(Long id);
     Flux<Product> findAll();
-    Mono<Void> deleteById(String id);
-    Mono<Boolean> existsById(String id);
+    Mono<Void> deleteById(Long id);
+    Mono<Boolean> existsById(Long id);
 }

@@ -24,7 +24,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Mono<Product> getProductById(@PathVariable String id) {
+    public Mono<Product> getProductById(@PathVariable Long id) {
         return productUseCase.getProductById(id);
     }
 
@@ -34,14 +34,14 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Product> updateProduct(@PathVariable String id, @RequestBody Product product) {
+    public Mono<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         System.out.println(product);
         return productUseCase.updateProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteProduct(@PathVariable String id) {
+    public Mono<Void> deleteProduct(@PathVariable Long id) {
         return productUseCase.deleteProduct(id);
     }
 }

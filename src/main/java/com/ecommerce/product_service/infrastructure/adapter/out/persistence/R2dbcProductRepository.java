@@ -25,12 +25,13 @@ public class R2dbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public Mono<Product> update(String id, Product product) {
+    public Mono<Product> update(Long id, Product product) {
         return template.selectOne(
                         Query.query(where("id").is(id)),
                         ProductEntity.class
                 )
                 .flatMap(existingEntity -> {
+                    System.out.println(existingEntity);
                     existingEntity.setName(product.getName());
                     existingEntity.setDescription(product.getDescription());
                     existingEntity.setPrice(product.getPrice());
@@ -43,7 +44,7 @@ public class R2dbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public Mono<Product> findById(String id) {
+    public Mono<Product> findById(Long id) {
         return template.selectOne(
                         Query.query(where("id").is(id)),
                         ProductEntity.class
@@ -59,15 +60,14 @@ public class R2dbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
+    public Mono<Void> deleteById(Long id) {
         return template.delete(
                 Query.query(where("id").is(id)),
                 ProductEntity.class
         ).then();
     }
-
     @Override
-    public Mono<Boolean> existsById(String id) {
+    public Mono<Boolean> existsById(Long id) {
         return template.exists(
                 Query.query(where("id").is(id)),
                 ProductEntity.class

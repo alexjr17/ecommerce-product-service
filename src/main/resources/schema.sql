@@ -7,6 +7,9 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--INSERT INTO users (username, email, password)
+--VALUES ('admin', 'admin@example.com', '$2a$12$CGQqkg8y8n1VQ3bdYrV5teuMCQO7QQkGdViTuiM54YYX3vBE/ETzG');
+
 CREATE TABLE IF NOT EXISTS products (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

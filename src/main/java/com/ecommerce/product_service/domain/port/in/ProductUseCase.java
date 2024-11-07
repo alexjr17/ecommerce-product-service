@@ -6,8 +6,8 @@ import reactor.core.publisher.Mono;
 
 public interface ProductUseCase {
     Mono<Product> createProduct(Product product);
-    Mono<Product> getProductById(String id);
+    Mono<Product> getProductById(Long id);
     Flux<Product> getAllProducts();
-    Mono<Product> updateProduct(String id, Product product);
-    Mono<Void> deleteProduct(String id);
+    Mono<Product> updateProduct(Long id, Product product);
+    Mono<Void> deleteProduct(Long id);
 }

@@ -55,13 +55,13 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Mono<ErrorResponse> handleGenericException(Exception ex, ServerWebExchange exchange) {
-        return Mono.just(ErrorResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("An unexpected error occurred")
-                .path(exchange.getRequest().getPath().value())
-                .build());
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public Mono<ErrorResponse> handleGenericException(Exception ex, ServerWebExchange exchange) {
+//        return Mono.just(ErrorResponse.builder()
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                .message("An unexpected error occurred")
+//                .path(exchange.getRequest().getPath().value())
+//                .build());
+//    }
 }

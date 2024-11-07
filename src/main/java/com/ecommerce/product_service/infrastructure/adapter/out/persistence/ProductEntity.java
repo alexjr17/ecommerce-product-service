@@ -20,23 +20,10 @@ import java.math.BigDecimal;
 @Table("products")
 public class ProductEntity {
     @Id
-    @NotBlank(message = "Product ID cannot be blank")
-    private String id;
-
-    @NotBlank(message = "Product name cannot be blank")
+    private Long id;
     private String name;
-
-    @NotBlank(message = "Description cannot be blank")
     private String description;
-
-    @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
-
-    @NotNull(message = "Stock cannot be null")
-    @Min(value = 0, message = "Stock cannot be negative")
     private Integer stock;
-
-    @NotNull(message = "Active status cannot be null")
     private boolean active;
 }

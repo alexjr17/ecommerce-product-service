@@ -1,5 +1,8 @@
 package com.ecommerce.product_service.infrastructure.adapter.out.persistence;
 
+import com.ecommerce.product_service.domain.DTO.OrderDTO;
+import com.ecommerce.product_service.domain.DTO.ProductDTO;
+import com.ecommerce.product_service.domain.DTO.UserDTO;
 import com.ecommerce.product_service.domain.exception.DuplicateException;
 import com.ecommerce.product_service.domain.exception.NotFoundException;
 import com.ecommerce.product_service.domain.model.Order;
@@ -20,27 +23,14 @@ public class R2dbcOrderRepository implements OrderRepository {
     private final R2dbcEntityTemplate template;
 
     @Override
-    public Mono<Order> create(Order order) {
-        return existsById(order.getId())
-                .flatMap(exists -> {
-                    if (exists) {
-                        return Mono.error(new DuplicateException("Order with ID " + order.getId() + " already exists"));
-                    } else {
-                        return saveOrder(order);
-                    }
-                })
-                .onErrorMap(R2dbcDataIntegrityViolationException.class, ex ->
-                        new RuntimeException("Data integrity violation: " + ex.getMessage()));
-    }
-
-    private Mono<Order> saveOrder(Order order) {
+    public Mono<OrderDTO> create(Order order) {
         OrderEntity entity = mapToEntity(order);
         return template.insert(entity)
-                .map(this::mapToDomain);
+                .flatMap(this::mapToDomainDTO);
     }
 
     @Override
-    public Mono<Order> update(String id, Order order) {
+    public Mono<Order> update(Long id, Order order) {
         return template.selectOne(
                         Query.query(where("id").is(id)),
                         OrderEntity.class
@@ -52,28 +42,30 @@ public class R2dbcOrderRepository implements OrderRepository {
                     existingEntity.setTotal(order.getTotal());
                     existingEntity.setStatus(order.getStatus());
                     return template.update(existingEntity)
-                            .map(this::mapToDomain);
+                            .then(Mono.just(mapToDomain(existingEntity)));
                 })
                 .switchIfEmpty(Mono.error(new NotFoundException("Order not found with id: " + id)));
     }
 
     @Override
-    public Mono<Order> findById(String id) {
+    public Mono<OrderDTO> findById(Long id) {
         return template.selectOne(
-                Query.query(where("id").is(id)),
-                OrderEntity.class
-        ).map(this::mapToDomain).switchIfEmpty(Mono.error(new NotFoundException("Order not found with id: " + id)));
+                        Query.query(where("id").is(id)),
+                        OrderEntity.class
+                )
+                .flatMap(this::mapToDomainDTO)
+                .switchIfEmpty(Mono.error(new NotFoundException("Order not found with id: " + id)));
     }
 
     @Override
-    public Flux<Order> findAll() {
+    public Flux<OrderDTO> findAll() {
         return template.select(OrderEntity.class)
                 .all()
-                .map(this::mapToDomain);
+                .flatMap(this::mapToDomainDTO);
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
+    public Mono<Void> deleteById(Long id) {
         return template.delete(
                 Query.query(where("id").is(id)),
                 OrderEntity.class
@@ -81,7 +73,7 @@ public class R2dbcOrderRepository implements OrderRepository {
     }
 
     @Override
-    public Mono<Boolean> existsById(String id) {
+    public Mono<Boolean> existsById(Long id) {
         return template.exists(
                 Query.query(where("id").is(id)),
                 OrderEntity.class
@@ -108,5 +100,36 @@ public class R2dbcOrderRepository implements OrderRepository {
                 .total(entity.getTotal())
                 .status(entity.getStatus())
                 .build();
+    }
+    private Mono<OrderDTO> mapToDomainDTO(OrderEntity entity) {
+        return Mono.zip(
+                        template.selectOne(Query.query(where("id").is(entity.getUserId())), UserEntity.class),
+                        template.selectOne(Query.query(where("id").is(entity.getProductId())), ProductEntity.class)
+                )
+                .flatMap(tuple -> {
+                    UserEntity user = tuple.getT1();
+                    ProductEntity product = tuple.getT2();
+
+                    return Mono.just(OrderDTO.builder()
+                            .id(entity.getId())
+                            .userId(entity.getUserId())
+                            .productId(entity.getProductId())
+                            .user(UserDTO.builder()
+                                    .id(user.getId())
+                                    .username(user.getUsername())
+                                    .email(user.getEmail())
+                                    .build())
+                            .product(ProductDTO.builder()
+                                    .id(product.getId())
+                                    .name(product.getName())
+                                    .price(product.getPrice())
+                                    .build())
+                            .quantity(entity.getQuantity())
+                            .total(entity.getTotal())
+                            .status(entity.getStatus())
+                            .createdAt(entity.getCreatedAt())
+                            .updatedAt(entity.getUpdatedAt())
+                            .build());
+                });
     }
 }
