@@ -9,6 +9,7 @@ Servicio de gestión de productos implementado con Spring WebFlux y R2DBC, sigui
 - R2DBC con MySQL
 - Docker
 - Gradle
+- JUnit y Mockito 
 
 ## Arquitectura
 
