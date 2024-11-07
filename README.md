@@ -139,7 +139,7 @@ curl -X POST http://localhost:8081/api/products \
     "stock": 10
 }'
 ```
-## Documentacion Recursos en posman
+## Documentacion y Recursos funcionales en posman
 ```
 https://winter-zodiac-158892.postman.co/workspace/MyDatasinc~74280b6e-9ead-4cf4-b50f-29353615cc8a/collection/20219157-0ee01da0-aa17-4711-b09c-7d7c3d2bc2bf?action=share&creator=20219157
 ```
