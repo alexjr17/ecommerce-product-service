@@ -201,7 +201,7 @@ Si encuentras problemas:
 
 ## Tablas Mysql
 ```
-por si falla el docker
+por si falla el docker, puede que sea necesario un registro de usuario para evitar errores en las relaciones de orden, aunque esta null
 -- Crear la base de datos
 CREATE DATABASE IF NOT EXISTS db_ecommerce
 CHARACTER SET utf8mb4
