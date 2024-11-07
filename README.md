@@ -25,6 +25,56 @@ src/
 │       └── schema.sql
 ```
 
+```mermaid
+graph TB
+    subgraph "Frontend"
+        CLI[Cliente Web/Mobile]
+    end
+
+    subgraph "API Gateway"
+        APIG[API Gateway]
+    end
+
+    subgraph "Authentication"
+        Auth[Auth Service]
+        JWT[JWT Token Handler]
+    end
+
+    subgraph "Product Catalog Service"
+        PC[Product API]
+        PL[Product Logic]
+        PR[Product Repository]
+        PC --> PL
+        PL --> PR
+        PR --> PDB[(Product DB)]
+    end
+
+    subgraph "Order Management Service"
+        OC[Order API]
+        OL[Order Logic]
+        OR[Order Repository]
+        OC --> OL
+        OL --> OR
+        OR --> ODB[(Order DB)]
+    end
+
+    subgraph "Shared Infrastructure"
+        Log[Logging Service]
+        Mon[Monitoring]
+        Cache[Redis Cache]
+    end
+
+    CLI --> APIG
+    APIG --> Auth
+    Auth --> JWT
+    APIG --> PC
+    APIG --> OC
+    
+    PC --> Log
+    OC --> Log
+    PC --> Cache
+    OC --> Cache
+
 ## Requisitos Previos
 
 - Docker
