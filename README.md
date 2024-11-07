@@ -25,6 +25,8 @@ src/
 │       └── schema.sql
 ```
 
+## Diagrama de Arquitectura
+
 ```mermaid
 graph TB
     subgraph "Frontend"
@@ -105,20 +107,21 @@ La aplicación estará disponible en:
 
 ### 3. Endpoints Disponibles
 
---- Productus
+```
+Productus
 - GET `/api/products` - Listar todos los productos
 - GET `/api/products/{id}` - Obtener un producto por ID
 - POST `/api/products` - Crear un nuevo producto
 - PUT `/api/products/{id}` - Actualizar un producto
 - DELETE `/api/products/{id}` - Eliminar un producto
 
-- Ordenes
+Ordenes
 - GET `/api/orders` - Listar todos los productos
 - GET `/api/orders/{id}` - Obtener un producto por ID
 - POST `/api/orders` - Crear un nuevo producto
 - PUT `/api/orders/{id}` - Actualizar un producto
 - DELETE `/api/orders/{id}` - Eliminar un producto
-
+```
 ### 4. Ejemplo de Petición POST
 
 ```bash
