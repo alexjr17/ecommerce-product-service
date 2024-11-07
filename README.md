@@ -10,8 +10,13 @@ Servicio de gestión de productos implementado con Spring WebFlux y R2DBC, sigui
 - Docker
 - Gradle
 
-## Estructura del Proyecto
+## Arquitectura
 
+El proyecto sigue una arquitectura hexagonal (ports and adapters) con tres capas principales:
+
+1. **Domain**: Contiene la lógica de negocio y modelos
+2. **Application**: Servicios de aplicación y casos de uso
+3. **Infrastructure**: Adaptadores para la persistencia y API REST
 ```
 src/
 ├── main/
@@ -134,14 +139,6 @@ curl -X POST http://localhost:8081/api/products \
     "stock": 10
 }'
 ```
-
-## Arquitectura
-
-El proyecto sigue una arquitectura hexagonal (ports and adapters) con tres capas principales:
-
-1. **Domain**: Contiene la lógica de negocio y modelos
-2. **Application**: Servicios de aplicación y casos de uso
-3. **Infrastructure**: Adaptadores para la persistencia y API REST
 
 ## Pruebas
 
