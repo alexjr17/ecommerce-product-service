@@ -111,6 +111,7 @@ docker-compose down
 
 La aplicación estará disponible en:
 - API: http://localhost:8080
+- API: http://localhost:8081 //puede cambiar el puerto
 - Base de datos MySQL: puerto 3306
 
 ### 3. Endpoints Disponibles
