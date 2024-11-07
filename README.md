@@ -139,10 +139,10 @@ curl -X POST http://localhost:8081/api/products \
     "stock": 10
 }'
 ```
-## Documentacion y Recursos funcionales en posman
-```
-https://elements.getpostman.com/redirect?entityId=20219157-0ee01da0-aa17-4711-b09c-7d7c3d2bc2bf&entityType=collection
-```
+# Documentación de la API de ecommerce
+Aquí puedes acceder a la documentación completa de los recursos y endpoints de nuestra API de ecommerce:
+
+[Ver documentación en Postman](https://elements.getpostman.com/redirect?entityId=20219157-0ee01da0-aa17-4711-b09c-7d7c3d2bc2bf&entityType=collection)
 
 ## Pruebas
 
