@@ -1,6 +1,6 @@
 spring:
   r2dbc:
-    url: r2dbc:mysql://mysql:3306/db_product
+    url: r2dbc:mysql://mysql:3306/db_ecommerce
     username: root
     password: root
   sql:

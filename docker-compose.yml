@@ -5,9 +5,9 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_product
+      MYSQL_DATABASE: db_ecommerce
     ports:
-      - "3307:3306"
+      - "3306:3307"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -21,11 +21,11 @@ services:
     container_name: product-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_R2DBC_URL: r2dbc:mysql://mysql:3306/db_product
+      SPRING_R2DBC_URL: r2dbc:mysql://mysql:3306/db_ecommerce
       SPRING_R2DBC_USERNAME: root
       SPRING_R2DBC_PASSWORD: root
     ports:
-      - "8081:8080"
+      - "8080:8081"
     depends_on:
       mysql:
         condition: service_healthy

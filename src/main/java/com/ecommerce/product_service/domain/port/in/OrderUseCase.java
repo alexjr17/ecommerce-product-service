@@ -1,7 +1,6 @@
 package com.ecommerce.product_service.domain.port.in;
 
 import com.ecommerce.product_service.domain.DTO.OrderDTO;
-import com.ecommerce.product_service.domain.DTO.OrderResponseDTO;
 import com.ecommerce.product_service.domain.model.Order;
 import com.ecommerce.product_service.infrastructure.adapter.out.persistence.OrderEntity;
 import reactor.core.publisher.Flux;
