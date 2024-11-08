@@ -1,23 +1,34 @@
 package com.ecommerce.product_service.application.service;
 
+import com.ecommerce.product_service.domain.DTO.ProductDTO;
 import com.ecommerce.product_service.domain.exception.NotFoundException;
 import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.in.ProductUseCase;
 import com.ecommerce.product_service.domain.port.out.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ProductService implements ProductUseCase {
     private final ProductRepository productRepository;
 
     @Override
-    public Mono<Product> createProduct(Product product) {
-        return productRepository.create(product);
+    public Mono<Product> createProduct(ProductDTO dto) {
+
+        return productRepository.create(Product.builder().
+                name(dto.getName()).
+                description(dto.getDescription()).
+                price(dto.getPrice()).
+                stock(dto.getStock()).
+                build());
     }
 
     @Override
@@ -32,8 +43,13 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public Mono<Product> updateProduct(Long id, Product product) {
-        return productRepository.update(id, product);
+    public Mono<Product> updateProduct(Long id, ProductDTO dto) {
+        return productRepository.update(id, Product.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .price(dto.getPrice())
+                .stock(dto.getStock())
+                .build());
     }
 
     @Override

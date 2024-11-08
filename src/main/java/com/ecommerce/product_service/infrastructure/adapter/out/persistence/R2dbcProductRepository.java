@@ -4,13 +4,17 @@ import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.out.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.logging.Logger;
+
 import static org.springframework.data.relational.core.query.Criteria.where;
+@Slf4j
 
 @Repository
 @RequiredArgsConstructor
@@ -85,6 +89,11 @@ public class R2dbcProductRepository implements ProductRepository {
     }
 
     private Product mapToDomain(ProductEntity entity) {
+        log.error("Validation error occurred: {}", entity);
+        if (entity == null) {
+            throw new IllegalArgumentException("ProductEntity cannot be null");
+        }
+
         return Product.builder()
                 .id(entity.getId())
                 .name(entity.getName())

@@ -1,5 +1,6 @@
 package com.ecommerce.product_service.infrastructure.adapter.in.web;
 
+import com.ecommerce.product_service.domain.DTO.ProductDTO;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.in.ProductUseCase;
 import jakarta.validation.Valid;
@@ -18,9 +19,8 @@ public class ProductController {
     private final ProductUseCase productUseCase;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Product> createProduct(@Validated @RequestBody Product product) {
-        return productUseCase.createProduct(product);
+    public Mono<Product> createProduct(@Valid @RequestBody ProductDTO Dto) {
+        return productUseCase.createProduct(Dto);
     }
 
     @GetMapping("/{id}")
@@ -34,9 +34,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        System.out.println(product);
-        return productUseCase.updateProduct(id, product);
+    public Mono<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO Dto) {
+        return productUseCase.updateProduct(id, Dto);
     }
 
     @DeleteMapping("/{id}")

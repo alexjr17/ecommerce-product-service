@@ -33,6 +33,7 @@ dependencies {
 	runtimeOnly 'io.asyncer:r2dbc-mysql'
 	annotationProcessor 'org.projectlombok:lombok'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-logging'
 
 	// Dependencias de testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

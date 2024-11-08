@@ -4,6 +4,7 @@ import com.ecommerce.product_service.domain.DTO.OrderDTO;
 import com.ecommerce.product_service.domain.model.Order;
 import com.ecommerce.product_service.domain.port.in.OrderUseCase;
 import com.ecommerce.product_service.infrastructure.adapter.out.persistence.OrderEntity;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<OrderDTO> createOrder(@RequestBody Order order) {
+    public Mono<OrderDTO> createOrder(@Valid @RequestBody Order order) {
         return orderUseCase.createOrder(order);
     }
 
@@ -34,7 +35,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) {
+    public Mono<Order> updateOrder(@PathVariable Long id,@Valid @RequestBody Order order) {
         return orderUseCase.updateOrder(id, order);
     }
 

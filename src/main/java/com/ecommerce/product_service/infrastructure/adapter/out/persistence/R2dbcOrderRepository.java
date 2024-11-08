@@ -120,7 +120,7 @@ public class R2dbcOrderRepository implements OrderRepository {
                                     .email(user.getEmail())
                                     .build())
                             .product(ProductDTO.builder()
-                                    .id(product.getId())
+//                                    .id(product.getId())
                                     .name(product.getName())
                                     .price(product.getPrice())
                                     .build())

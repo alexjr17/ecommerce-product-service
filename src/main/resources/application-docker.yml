@@ -1,8 +1,10 @@
 spring:
+  main:
+    web-application-type: reactive  # Esto configura tu aplicación como reactiva
   r2dbc:
-    url: r2dbc:mysql://mysql:3306/db_ecommerce
-    username: root
-    password: root
+    url: ${SPRING_R2DBC_URL:r2dbc:mysql://localhost:3306/db_ecommerce}
+    username: ${SPRING_R2DBC_USERNAME:root}
+    password: ${SPRING_R2DBC_PASSWORD:root}
   sql:
     init:
       mode: always
@@ -14,3 +16,7 @@ server:
 logging:
   level:
     org.springframework.data.r2dbc: DEBUG
+    org.springframework.web: DEBUG
+    com.ecommerce.product_service: DEBUG
+  file:
+    name: logs/application.log

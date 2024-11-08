@@ -1,6 +1,7 @@
 package com.ecommerce.product_service.application.service;
 
 
+import com.ecommerce.product_service.domain.DTO.ProductDTO;
 import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.out.ProductRepository;
@@ -29,6 +30,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     private Product testProduct;
+    private ProductDTO testProductDto;
 
     @BeforeEach
     void setUp() {
@@ -39,14 +41,21 @@ class ProductServiceTest {
                 .description("Test Description")
                 .stock(10)
                 .build();
+        testProductDto = ProductDTO.builder()
+                .name(testProduct.getName())
+                .description(testProduct.getDescription())
+                .price(testProduct.getPrice())
+                .stock(testProduct.getStock())
+                .build();
     }
 
     @Test
     void createProduct_Success() { // Crear producto
+
         when(productRepository.create(any(Product.class)))
                 .thenReturn(Mono.just(testProduct));
 
-        StepVerifier.create(productService.createProduct(testProduct))
+        StepVerifier.create(productService.createProduct(testProductDto))
                 .expectNext(testProduct)
                 .verifyComplete();
 
@@ -102,7 +111,7 @@ class ProductServiceTest {
         when(productRepository.update(any(Long.class), any(Product.class)))
                 .thenReturn(Mono.just(updatedProduct));
 
-        StepVerifier.create(productService.updateProduct(1L, updatedProduct))
+        StepVerifier.create(productService.updateProduct(1L, testProductDto))
                 .expectNext(updatedProduct)
                 .verifyComplete();
 
@@ -122,7 +131,7 @@ class ProductServiceTest {
         when(productRepository.update(any(Long.class), any(Product.class)))
                 .thenReturn(Mono.error(new ProductNotFoundException("Product not found with id: 999")));
 
-        StepVerifier.create(productService.updateProduct(999L, updateProduct))
+        StepVerifier.create(productService.updateProduct(999L, testProductDto))
                 .expectError(ProductNotFoundException.class)
                 .verify();
 
@@ -154,8 +163,7 @@ class ProductServiceTest {
 
     @Test
     void createProduct_WithNegativePrice() { //Fallo precio negativo
-        Product invalidProduct = Product.builder()
-                .id(1L)
+        ProductDTO invalidProduct = ProductDTO.builder()
                 .name("Invalid Product")
                 .price(new BigDecimal("-100.00"))
                 .description("Test Description")

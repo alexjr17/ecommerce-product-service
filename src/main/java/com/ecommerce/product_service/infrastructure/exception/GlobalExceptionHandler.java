@@ -1,67 +1,68 @@
 package com.ecommerce.product_service.infrastructure.exception;
 
-import com.ecommerce.product_service.domain.exception.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Mono<ErrorResponse> handleNotFoundException(NotFoundException ex, ServerWebExchange exchange) {
-        return Mono.just(ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .path(exchange.getRequest().getPath().value())
-                .build());
-    }
+    @ExceptionHandler(WebExchangeBindException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleValidationExceptions(WebExchangeBindException ex, ServerWebExchange exchange) {
+        log.error("Validation error occurred: {}", ex.getMessage());
 
-    @ExceptionHandler(DuplicateException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Mono<ErrorResponse> handleDuplicateException(DuplicateException ex, ServerWebExchange exchange) {
-        return Mono.just(ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value())
-                .message(ex.getMessage())
-                .path(exchange.getRequest().getPath().value())
-                .build());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Mono<ErrorResponse> handleValidationExceptions(
-            MethodArgumentNotValidException ex,
-            ServerWebExchange exchange) {
-
-        BindingResult result = ex.getBindingResult();
-        List<String> errors = result.getFieldErrors().stream()
-                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+        // Obtener todos los mensajes de error de validación
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> String.format("%s: %s",
+                        error.getField(),
+                        error.getDefaultMessage())
+                )
                 .collect(Collectors.toList());
 
-        return Mono.just(ErrorResponse.builder()
+        // Obtener el path de la request actual
+        String path = exchange.getRequest().getPath().value();
+
+        // Crear la respuesta usando tu ErrorResponse existente
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .message("Validation failed")
-                .path(exchange.getRequest().getPath().value())
+                .message("Error de validación en la solicitud")
+                .path(path)
                 .errors(errors)
-                .build());
+                .build();
+
+        return Mono.just(ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse));
     }
 
+    // Manejador general de excepciones
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Mono<ErrorResponse> handleGenericException(Exception ex, ServerWebExchange exchange) {
-        return Mono.just(ErrorResponse.builder()
+    public Mono<ResponseEntity<ErrorResponse>> handleAllExceptions(Exception ex, ServerWebExchange exchange) {
+        log.error("Unexpected error occurred: ", ex);
+
+        String path = exchange.getRequest().getPath().value();
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("An unexpected error occurred")
-                .path(exchange.getRequest().getPath().value())
-                .build());
+                .message("Ha ocurrido un error interno en el servidor")
+                .path(path)
+                .errors(List.of(ex.getMessage()))
+                .build();
+
+        return Mono.just(ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse));
     }
 }

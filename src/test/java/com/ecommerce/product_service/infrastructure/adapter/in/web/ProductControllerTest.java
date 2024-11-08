@@ -1,5 +1,6 @@
 package com.ecommerce.product_service.infrastructure.adapter.in.web;
 
+import com.ecommerce.product_service.domain.DTO.ProductDTO;
 import com.ecommerce.product_service.domain.exception.ProductNotFoundException;
 import com.ecommerce.product_service.domain.model.Product;
 import com.ecommerce.product_service.domain.port.in.ProductUseCase;
@@ -34,7 +35,9 @@ class ProductControllerTest {
     @MockBean
     private ProductUseCase productUseCase;
 
+
     private Product testProduct;
+    private ProductDTO testProductDto;
 
     @BeforeEach
     void setUp() {
@@ -45,23 +48,30 @@ class ProductControllerTest {
                 .description("Test Description")
                 .stock(10)
                 .build();
+
+        testProductDto = ProductDTO.builder()
+                .name(testProduct.getName())
+                .description(testProduct.getDescription())
+                .price(testProduct.getPrice())
+                .stock(testProduct.getStock())
+                .build();
     }
 
     @Test
     void createProduct_Success() { //Test crear producto
-        when(productUseCase.createProduct(any(Product.class)))
-                .thenReturn(Mono.just(testProduct));
+        when(productUseCase.createProduct(testProductDto)
+                .thenReturn(Mono.just(testProductDto)));
 
         webTestClient.post()
                 .uri("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(testProduct)
+                .bodyValue(testProductDto)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(Product.class)
                 .isEqualTo(testProduct);
 
-        verify(productUseCase, times(1)).createProduct(any(Product.class));
+        verify(productUseCase, times(1)).createProduct(testProductDto);
     }
 
     @Test
