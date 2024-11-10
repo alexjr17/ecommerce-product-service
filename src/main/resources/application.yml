@@ -18,5 +18,10 @@ logging:
     org.springframework.data.r2dbc: DEBUG
     org.springframework.web: DEBUG
     com.ecommerce.product_service: DEBUG
+    org.springframework.security: DEBUG
   file:
     name: logs/application.log
+
+jwt:
+  secret-key: VmvrnN3KhH+fT2UsmP3BcJMDEWig/1MA1T76PC1wxLw=
+  token-validity: 3600000

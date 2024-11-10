@@ -19,6 +19,7 @@ public class ProductController {
     private final ProductUseCase productUseCase;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Product> createProduct(@Valid @RequestBody ProductDTO Dto) {
         return productUseCase.createProduct(Dto);
     }

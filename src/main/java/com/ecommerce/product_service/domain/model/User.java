@@ -6,14 +6,14 @@ import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Value
-@Builder
 @Data
+@Builder
 public class User {
-    String Id;
-    String UserName;
-    String Email;
-    String Password;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    private Long id;
+    private String username;
+    private String email;
+    private String password;
+//    private String role;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
