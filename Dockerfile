@@ -8,6 +8,8 @@ COPY gradlew.bat .
 COPY src ./src
 RUN chmod +x ./gradlew
 RUN ./gradlew build -x test
+#java -Duser.timezone="America/Bogota" -jar app.jar
+
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app

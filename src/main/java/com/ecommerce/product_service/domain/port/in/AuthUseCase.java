@@ -8,6 +8,4 @@ import reactor.core.publisher.Mono;
 public interface AuthUseCase {
     Mono<AuthResponseDTO> authenticate(AuthDTO authDTO);
     Mono<AuthResponseDTO> register(RegisterDTO registerDTO);
-    Mono<Boolean> validateToken(String token);
-    Mono<String> getUserEmailFromToken(String token);
 }
