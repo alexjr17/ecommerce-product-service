@@ -2,12 +2,12 @@ spring:
   main:
     web-application-type: reactive  # Esto configura tu aplicación como reactiva
   r2dbc:
-    url: ${SPRING_R2DBC_URL:r2dbc:mysql://mysql.railway.internal:31700/railway}
-#    url: ${SPRING_R2DBC_URL:r2dbc:mysql://localhost:3306/db_ecommerce}
-#    username: ${SPRING_R2DBC_USERNAME:root}
-    username: ${SPRING_R2DBC_USERNAME:root}
-#    password: ${SPRING_R2DBC_PASSWORD:root}
-    password: ${SPRING_R2DBC_PASSWORD:arIdTuREYHdwATEjqJsVFMOAdqizhhva}
+    url: ${SPRING_R2DBC_URL:r2dbc:mysql:${DB_HOST}:${DB_PORT}/${DB_NAME}}
+    username: ${SPRING_R2DBC_USERNAME:${DB_USER}}
+    password: ${SPRING_R2DBC_PASSWORD:${DB_PASSWORD}}
+    #    url: ${SPRING_R2DBC_URL:r2dbc:mysql://localhost:3306/railway}
+    #    username: ${SPRING_R2DBC_USERNAME:root}
+    #    password: ${SPRING_R2DBC_PASSWORD:root}
   sql:
     init:
 #      mode: always
@@ -15,8 +15,8 @@ spring:
       schema-locations: classpath:schema.sql
   webflux:
     base-path: /api
-  jackson:
-    time-zone: America/Bogota
+#  jackson:
+#    time-zone: America/Bogota
 
 server:
   port: 8080
